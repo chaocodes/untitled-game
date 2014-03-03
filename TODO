@@ -1,0 +1,9 @@
+[]make movement independent of frame rate
+[]convert to OPENGL
+[]bullets - draw every pixel
+[]3prong - make external function
+[]better - more efficient collision detection
+[]player sprite
+[]better game states?? maybe
+[]sound, audio feedback
+[]more flashy graphics - glows, bgs, moving parts, etc -- video feedback for damage
