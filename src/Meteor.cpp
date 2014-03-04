@@ -11,21 +11,19 @@ Meteor::Meteor(void)
 	alive = false;
 }
 
-Meteor::Meteor(POINT start, POINT finish, int vel)
+Meteor::Meteor(POINT start, POINT finish)
 {
 	// random meteor properties
 	meteor_shape = rand() % 3;
-	int r = rand() % 255;
-	int g = rand() % 255;
-	int b = rand() % 255;
-	if (r == 255 && g == 255 && b == 255)
+	meteor_color.r = rand() % 255;
+	meteor_color.g = rand() % 255;
+	meteor_color.b = rand() % 255;
+	if (meteor_color.r == 255 && meteor_color.g == 255 && meteor_color.b == 255)
 	{
-		r = 50;
-		g = 20;
-		b = 200;
+		meteor_color.r = 200;
+		meteor_color.g = 200;
+		meteor_color.b = 200;
 	}
-
-	meteor_color = al_map_rgb(r, g, b);
 
 	position = start;
 	end = finish;
@@ -35,11 +33,11 @@ Meteor::Meteor(POINT start, POINT finish, int vel)
 
 	width = rand() % 50 + 20;
 	height = width;
-	health = 10; // change based on size ALSO change speed based on size
+	health = width / 5;
 
 	update_bound();
 
-	velocity = vel;
+	velocity = 2500 / width; // smaller = faster
 	acceleration = 1;
 	max_speed = rand() % 3 + 3;
 
@@ -52,6 +50,9 @@ void Meteor::draw(void)
 {
 	if (alive)
 	{
+		glLoadIdentity();
+		glColor3f(meteor_color.r / 255.0f, meteor_color.g / 255.0f, meteor_color.b / 255.0f);
+
 		if (meteor_shape == TRIANGLE)
 		{
 			int x1 = position.x;
@@ -61,15 +62,32 @@ void Meteor::draw(void)
 			int x3 = position.x + width / 2;
 			int y3 = position.y + height / 2;
 
-			al_draw_filled_triangle(x1, y1, x2, y2, x3, y3, meteor_color);
+			glBegin(GL_TRIANGLES);
+			glVertex2i(x1, y1);
+			glVertex2i(x2, y2);
+			glVertex2i(x3, y3);
+			glEnd();
 		}
 		else if (meteor_shape == RECTANGLE)
 		{
-			al_draw_filled_rectangle(bound_box.left, bound_box.top, bound_box.right, bound_box.bottom, meteor_color);
+			glRectf(bound_box.left, bound_box.top, bound_box.right, bound_box.bottom);
 		}
 		else if (meteor_shape == CIRCLE)
 		{
-			al_draw_filled_circle(position.x, position.y, width / 2, meteor_color);
+			int x1 = position.x;
+			int y1 = position.y;
+			int x2;
+			int y2;
+
+			glBegin(GL_TRIANGLE_FAN);
+			glVertex2f(x1, y1);
+			for (float angle = 1.0f; angle < 361.0f; angle += 0.2f)
+			{
+				x2 = x1 + sin(angle) * (width / 2);
+				y2 = y1 + cos(angle) * (width / 2);
+				glVertex2f(x2, y2);
+			}
+			glEnd();
 		}
 	}
 }

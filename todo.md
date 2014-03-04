@@ -1,0 +1,19 @@
+#todo
+- [ ] make movement independent of frame rate
+- [ ] convert to OPENGL
+- [ ] maybe?? convert to SDL or SFML to eliminate text addon from changing projection matrix
+- [ ] change some opengl coords to integer to save computation time
+- [ ] smoother circles opengl
+- [ ] use opengl translate, rotate, etc.
+- [ ] refactor meteor class to shape class
+- [ ] shapes coming from spawn left and spawn right with 0 slope to make jumping useful
+- [ ] meteor and player explosion
+- [ ] tune difficulty scaling
+- [ ] bullets - draw every pixel?? -- maybe not
+- [ ] better - more efficient collision detection
+- [ ] player sprite
+- [ ] bullet sprite
+- [ ] better game states?? maybe
+- [ ] sound, audio feedback
+- [ ] more flashy graphics - glows, bgs, moving parts, etc -- video feedback for damage / powerups
+- [ ] high scores

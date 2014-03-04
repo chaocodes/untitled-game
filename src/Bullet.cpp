@@ -52,7 +52,23 @@ void Bullet::update(void)
 void Bullet::draw(void)
 {
 	// maybe?? fancier bullet
-	al_draw_filled_circle(position.x, position.y, width / 2, BLACK);
+	glLoadIdentity();
+	glColor3f(0.0f, 0.0f, 0.0f);
+
+	int x1 = position.x;
+	int y1 = position.y;
+	int x2;
+	int y2;
+
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex2f(x1, y1);
+	for (float angle = 1.0f; angle < 361.0f; angle += 0.2f)
+	{
+		x2 = x1 + sin(angle) * (width / 2);
+		y2 = y1 + cos(angle) * (width / 2);
+		glVertex2f(x2, y2);
+	}
+	glEnd();
 }
 
 int Bullet::getDamage(void)

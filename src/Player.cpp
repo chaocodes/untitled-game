@@ -66,16 +66,21 @@ void Player::draw(void)
 {
 	if (alive)
 	{
-		// body
-		al_draw_filled_rectangle(bound_box.left, bound_box.top, bound_box.right, bound_box.bottom, BLACK);
+		glLoadIdentity();
 
+		// body
+		glColor3f(0, 0, 0);
+		glRectf(bound_box.left, bound_box.top, bound_box.right, bound_box.bottom);
+
+		// eye
+		glColor3f(1, 1, 1);
 		if (direction == LEFT)
 		{
-			al_draw_filled_rectangle(bound_box.left, bound_box.top + 5, bound_box.left + 5, bound_box.top + 10, WHITE); // eye 5x5 square
+			glRectf(bound_box.left, bound_box.top + 5, bound_box.left + 5, bound_box.top + 10);
 		}
 		else if (direction == RIGHT)
 		{
-			al_draw_filled_rectangle(bound_box.right, bound_box.top + 5, bound_box.right - 5, bound_box.top + 10, WHITE); // eye 5x5 square
+			glRectf(bound_box.right, bound_box.top + 5, bound_box.right - 5, bound_box.top + 10);
 		}
 
 		for (int i = 0; i < MAX_BULLETS; i++)

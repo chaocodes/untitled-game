@@ -74,7 +74,7 @@ void MeteorSpawner::check_collision(Player &p)
 
 void MeteorSpawner::spawn(Player &p)
 {
-	int n = 1;
+	int n = 1; // number of meteors to spawn
 
 	if (canSpawn())
 	{
@@ -93,14 +93,13 @@ void MeteorSpawner::spawn(Player &p)
 			start.y = -50;
 			end.x = p.getPosition().x + ((rand() % 200) - 100);
 			end.y = B_HEIGHT;
-			velocity = rand() % 50 + 30;
 
 			if (start.x == end.x) // TODO: handle undefined slopes
 			{
 				end.x++;
 			}
 
-			meteors[i] = Meteor(start, end, velocity);
+			meteors[i] = Meteor(start, end);
 		}
 
 		index = (index + n) % MAX_METEORS;

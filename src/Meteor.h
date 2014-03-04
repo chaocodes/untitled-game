@@ -16,7 +16,7 @@ class Meteor
 	private:
 		// meteor
 		int meteor_shape;
-		ALLEGRO_COLOR meteor_color;
+		COLOR meteor_color;
 		POINT position;
 		POINT end;
 		double slope;
@@ -38,7 +38,7 @@ class Meteor
 	public:
 		// initialization
 		Meteor(void);
-		Meteor(POINT, POINT, int);
+		Meteor(POINT, POINT);
 		~Meteor(void);
 
 		// redraw

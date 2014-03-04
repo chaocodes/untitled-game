@@ -17,7 +17,7 @@ Powerup::Powerup(POINT finish)
 	position.y = 0;
 	end = finish;
 
-	font = al_load_ttf_font("arial.ttf", 12, 0);
+	font = al_load_ttf_font("fonts/arial.ttf", 12, 0); // change this..
 	speed = 2;
 
 	powerup = rand() % (PTOTAL); // always takes floor so 0 - 3
@@ -55,7 +55,22 @@ void Powerup::draw(void)
 	al_draw_text(font, BLACK, position.x, position.y, ALLEGRO_ALIGN_CENTER, powerup_name.c_str());
 	
 	// testing -- draw bound
-	al_draw_rectangle(bound_box.left, bound_box.top, bound_box.right, bound_box.bottom, GRAY, 1);
+	glColor3f(0.8f, 0.8f, 0.8f);
+	glBegin(GL_LINES);
+	// top
+	glVertex2i(bound_box.left, bound_box.top);
+	glVertex2i(bound_box.right, bound_box.top);
+	// bottom
+	glVertex2i(bound_box.left, bound_box.bottom);
+	glVertex2i(bound_box.right, bound_box.bottom);
+	// left
+	glVertex2i(bound_box.left, bound_box.top);
+	glVertex2i(bound_box.left, bound_box.bottom);
+	// right
+	glVertex2i(bound_box.right, bound_box.top);
+	glVertex2i(bound_box.right, bound_box.bottom);
+	glEnd();
+	
 }
 
 void Powerup::update(void)

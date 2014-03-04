@@ -24,7 +24,7 @@ ALLEGRO_BITMAP *background = NULL;
 bool running;
 int state;
 
-Player p(W_WIDTH, W_HEIGHT); // create player with bounds of window
+Player p(W_WIDTH, W_HEIGHT);
 MeteorSpawner ms(W_WIDTH, W_HEIGHT);
 PowerupSpawner ps(W_WIDTH, W_HEIGHT);
 UserInterface ui(W_WIDTH, W_HEIGHT);
@@ -60,11 +60,13 @@ void game_init(void)
 	if (!al_install_mouse())
 		game_abort("Failed to install mouse");
 
+	// lock fps
 	timer = al_create_timer(1.0 / W_FPS);
 	if (!timer)
 		game_abort("Failed to create timer");
 
 	al_set_new_display_flags(ALLEGRO_WINDOWED);
+	al_set_new_display_flags(ALLEGRO_OPENGL); // OpenGL 4.3
 	display = al_create_display(W_WIDTH, W_HEIGHT);
 	if (!display)
 		game_abort("Failed to create display");
@@ -73,10 +75,26 @@ void game_init(void)
 	if (!event_queue)
 		game_abort("Failed to create event queue");
 
-	background = al_load_bitmap("background.png");
+	// unused background image -- for now
+	background = al_load_bitmap("images/background.png");
 	if (background == NULL)
 		game_abort("Failed to load bitmap");
 
+	// opengl
+	glDisable(GL_DEPTH_TEST); // enable if you want to explicitly determine which object should be infront
+	glViewport(0, 0, W_WIDTH, W_HEIGHT);
+
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glMatrixMode(GL_PROJECTION); 
+	glLoadIdentity();
+	glOrtho(0, W_WIDTH, W_HEIGHT, 0, 0.0f, 1.0f); // CHANGE WHEN YOU FIGURE OUT SOLUTION FOR TEXT CHANGING ORTHO
+
+	glMatrixMode(GL_MODELVIEW); // no more changes to projection
+	glLoadIdentity();
+
+	// put events in event_queue
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_mouse_event_source());
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
@@ -84,11 +102,10 @@ void game_init(void)
 
 	spawn = { W_WIDTH / 2, W_HEIGHT - 50 };
 	p.init(spawn, LEFT);
-
 	ui.init_font();
 
-	running = true;
 	state = MENU;
+	running = true;
 }
 
 void game_shutdown(void)
@@ -109,12 +126,12 @@ void game_shutdown(void)
 
 void game_update(void)
 {
-	if (state == GAME)
+	if (state == GAME && p.getHealth() > 0)
 	{
 		p.update();
 		ms.update();
 		ps.update();
-		ms.check_collision(p); // make this happen with update
+		ms.check_collision(p);
 		ps.check_collision(p);
 		ms.spawn(p);
 		ps.spawn();
@@ -132,6 +149,8 @@ void game_update(void)
 
 void game_draw(void)
 {
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	if (state == MENU)
 	{
 		ui.draw_menu();
@@ -139,12 +158,16 @@ void game_draw(void)
 	else if (state == GAME)
 	{
 		//al_draw_bitmap(background, 0, 0, 0);
+		// ALLEGRO SETS OPENGL ORTHO WHEN DRAWING TEXT I BELIEVE
+		// SETS CLEAR COLOR TO BLACK
+		// SETS ORTHO TO TOP LEFT / TOP RIGHT 0,0 COORDS
 		al_clear_to_color(WHITE);
 
 		// redraw enviornment
 		p.draw();
 		ms.draw();
 		ps.draw();
+
 		ui.draw();
 	}
 	else if (state == END)
@@ -169,12 +192,7 @@ void game_loop(void)
 		{
 			case ALLEGRO_EVENT_TIMER:
 				redraw = true;
-
-				if (p.getHealth() > 0)
-				{
-					game_update();
-				}
-
+				game_update();
 				break;
 			case ALLEGRO_EVENT_KEY_DOWN:
 				switch (event.keyboard.keycode)

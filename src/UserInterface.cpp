@@ -21,15 +21,30 @@ UserInterface::~UserInterface()
 
 void UserInterface::init_font()
 {
-	score_font = al_load_ttf_font("arial.ttf", 48, 0);
-	powerup_font = al_load_ttf_font("arial.ttf", 10, 0);
+	score_font = al_load_ttf_font("fonts/arial.ttf", 48, 0);
+	powerup_font = al_load_ttf_font("fonts/arial.ttf", 10, 0);
 }
 
 void UserInterface::draw()
 {
+	glLoadIdentity();
+
 	// health
-	al_draw_filled_rectangle(10, 10, 100 * 2, 60, RED);
-	al_draw_filled_rectangle(10, 10, p_health * 2, 60, GREEN);
+	glBegin(GL_QUADS);
+
+	glColor3f(1.0f, 0.0f, 0.0f); // RED outer health
+	glVertex2i(10, 10);
+	glVertex2i(100 * 2, 10);
+	glVertex2i(100 * 2, 60);
+	glVertex2i(10, 60);
+
+	glColor3f(0.0f, 1.0f, 0.0f); // GREEN inner health
+	glVertex2i(10, 10);
+	glVertex2i(p_health * 2, 10);
+	glVertex2i(p_health * 2, 60);
+	glVertex2i(10, 60);
+
+	glEnd();
 	al_draw_textf(score_font, BLACK, 10, 10, 0, "%d", p_health);
 
 	// score
